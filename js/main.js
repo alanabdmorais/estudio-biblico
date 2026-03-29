@@ -960,12 +960,19 @@ document.getElementById('btnVerificarUsuario')?.addEventListener('click', verifi
 document.getElementById('btnCadastrar')?.addEventListener('click', function() {
     const nome = document.getElementById('cadastroNome').value.trim();
     const whats = document.getElementById('cadastroWhatsapp').value.trim();
+    const cpf = document.getElementById('cadastroCpf').value.trim();
+    const nascimento = document.getElementById('cadastroNascimento').value.trim();
     const senha = document.getElementById('cadastroSenha').value;
     const conf = document.getElementById('cadastroConfirmarSenha').value;
+    
     if (!nome || nome.split(' ').length < 2) return alert('Digite nome e sobrenome');
     if (!whats) return alert('Digite o WhatsApp');
+    if (!cpf) return alert('Digite os 3 primeiros dígitos do CPF');
+    if (!nascimento) return alert('Digite a data de nascimento (DD/MM)');
     if (senha !== conf) return alert('Senhas não conferem');
-    if (cadastrarUsuario(nome, whats, senha)) {
+    if (senha.length < 4) return alert('Senha deve ter pelo menos 4 caracteres');
+    
+    if (cadastrarUsuario(nome, whats, cpf, nascimento, senha)) {
         document.getElementById('cadastroForm').classList.add('hidden');
         document.getElementById('loginForm').classList.remove('hidden');
     }
