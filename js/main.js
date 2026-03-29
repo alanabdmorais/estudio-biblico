@@ -921,14 +921,34 @@ function voltarLoginRecup() {
 function verificarUsuario() {
     const nome = document.getElementById('recupNome').value.trim();
     const tel = document.getElementById('recupTelefone').value.trim();
+    const cpf = document.getElementById('recupCpf').value.trim();
+    const nascimento = document.getElementById('recupNascimento').value.trim();
     const result = document.getElementById('recupResultado');
-    if (!nome || !tel) return result.innerHTML = '<div class="error-box">Preencha os dados</div>';
-    const user = usuarios.find(function(u) { return u.nome.toLowerCase() === nome.toLowerCase() && u.whatsapp === tel; });
-    if (!user) return result.innerHTML = '<div class="error-box">❌ Usuário não encontrado!</div>';
-    const dados = 'SOLICITAÇÃO DE REDEFINIÇÃO\n\nNome: ' + user.nome + '\nTelefone: ' + user.whatsapp;
-    result.innerHTML = '<div class="success-box"><strong>✅ Usuário encontrado!</strong><br><br><div class="dados-copia">' + dados.replace(/\n/g,'<br>') + '</div><div style="display:flex;gap:8px;margin-top:12px;"><button id="copiarDados" class="btn-add">📋 Copiar</button><button id="whatsAdmin" class="btn-add">📱 Enviar Admin</button></div><p style="margin-top:12px;font-size:0.7rem;">⏰ O administrador irá gerar um link e enviar em até 24h.</p></div>';
-    document.getElementById('copiarDados')?.addEventListener('click', function() { navigator.clipboard.writeText(dados); alert('✅ Dados copiados!'); });
-    document.getElementById('whatsAdmin')?.addEventListener('click', function() { window.open('https://wa.me/41996497311?text=' + encodeURIComponent(dados), '_blank'); });
+    
+    if (!nome || !tel || !cpf || !nascimento) {
+        return result.innerHTML = '<div class="error-box">Preencha todos os dados</div>';
+    }
+    
+    const user = usuarios.find(u => 
+        u.nome.toLowerCase() === nome.toLowerCase() && 
+        u.whatsapp === tel &&
+        u.cpf === cpf &&
+        u.nascimento === nascimento
+    );
+    
+    if (!user) {
+        return result.innerHTML = '<div class="error-box">❌ Dados não conferem! Verifique nome, telefone, CPF (3 dígitos) e data de nascimento.</div>';
+    }
+    
+    // Abre modal para redefinir senha
+    document.getElementById('modalNome').innerText = user.nome;
+    document.getElementById('modalTelefone').innerText = user.whatsapp;
+    document.getElementById('resetModal').classList.remove('hidden');
+    
+    // Armazena o telefone do usuário para redefinir senha
+    window.usuarioRedefinindo = user.whatsapp;
+    
+    result.innerHTML = '<div class="success-box">✅ Dados confirmados! Digite sua nova senha abaixo.</div>';
 }
 // ========== EVENTOS ==========
 document.getElementById('btnLogin')?.addEventListener('click', function() { fazerLogin(document.getElementById('loginTelefone').value, document.getElementById('loginSenha').value); });
