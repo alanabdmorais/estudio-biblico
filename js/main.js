@@ -84,7 +84,7 @@ function gerarToken(nome, telefone) {
         expiracao: expiracao.toISOString(), criadoEm: new Date().toISOString()
     });
     salvarTokens();
-    return { token, link: window.location.origin + window.location.pathname + '?reset=' + token };
+    return { token, link: window.location.origin + window.location.pathname + '?token=' + token };
 }
 
 function validarToken(token) {
@@ -166,7 +166,7 @@ function fecharModalForcado() {
 function verificarTokenUrl() {
     fecharModalForcado();
     const params = new URLSearchParams(window.location.search);
-    const token = params.get('reset');
+    const token = params.get('token');
     if (!token) return;
     if (usuarioLogado) {
         window.history.replaceState({}, document.title, window.location.pathname);
@@ -1045,7 +1045,7 @@ renderizarBiblioteca();
 atualizarUI();
 
 // Só verifica token se houver na URL
-if (window.location.search.includes('reset')) {
+if (window.location.search.includes('token')) {
     verificarTokenUrl();
 }
 
@@ -1057,7 +1057,7 @@ window.addEventListener('load', function() {
 
 window.addEventListener('popstate', function() {
     fecharModalForcado();
-    if (window.location.search.includes('reset')) {
+    if (window.location.search.includes('token')) {
         verificarTokenUrl();
     }
 });
