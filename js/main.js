@@ -655,6 +655,23 @@ function carregarEstruturaComunitaria() {
         }
     }
 }
+function removerCapitulo(btn) {
+    const capDiv = btn.closest('.capitulo-card');
+    const autorInfo = capDiv.querySelector('.autor-info span');
+    const criador = autorInfo.innerText.match(/Criado por: ([^•]+)/);
+    if (criador && !podeEditarItem(usuarios.find(function(u) { return u.nome === criador[1].trim(); })?.whatsapp)) {
+        return alert('❌ Você não tem permissão para excluir este capítulo.');
+    }
+    if (confirm('Remover este capítulo?')) {
+        capDiv.remove();
+        const container = document.getElementById('capitulosContainer');
+        if (!container.querySelectorAll('.capitulo-card').length) {
+            document.getElementById('emptyState').classList.remove('hidden');
+            document.getElementById('capitulosContainer').classList.add('hidden');
+        }
+        salvarEstruturaComunitaria();
+    }
+}
 
 function gerarTexto() {
     let texto = '📚 LIVRO: ' + livroAtual + '\n' + '═'.repeat(60) + '\n\n';
