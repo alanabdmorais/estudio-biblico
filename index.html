@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 Estúdio Bíblico - Plataforma Comunitária</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="authScreen">
+        <div class="main-container">
+            <div class="login-card">
+                <h1>📚 Estúdio Bíblico</h1>
+                <p class="subtitle">Acesse sua conta para contribuir com os estudos</p>
+
+                <div id="loginForm">
+                    <div class="campo">
+                        <label>📱 WhatsApp (com DDD)</label>
+                        <input type="text" id="loginTelefone" placeholder="5511999999999">
+                    </div>
+                    <div class="campo">
+                        <label>🔒 Senha</label>
+                        <input type="password" id="loginSenha" placeholder="••••••••">
+                    </div>
+                    <button class="toolbar-btn primary" id="btnLogin" style="width: 100%; margin-top: 16px;">Entrar</button>
+                    <div style="text-align: center; margin-top: 16px;">
+                        <button class="toolbar-btn" id="btnCadastroLink">Não tem conta? Cadastre-se</button>
+                        <button class="toolbar-btn" id="btnEsqueciSenhaLink" style="margin-left: 12px;">Esqueci minha senha</button>
+                    </div>
+                </div>
+
+                <div id="cadastroForm" class="hidden">
+                    <div class="campo">
+                        <label>👤 Nome completo (nome + sobrenome)</label>
+                        <input type="text" id="cadastroNome" placeholder="Ex: João Silva">
+                    </div>
+                    <div class="campo">
+                        <label>📱 WhatsApp (com DDD, só números)</label>
+                        <input type="text" id="cadastroWhatsapp" placeholder="5511999999999">
+                    </div>
+                    <div class="campo">
+                        <label>🔒 Senha</label>
+                        <input type="password" id="cadastroSenha" placeholder="••••••••">
+                    </div>
+                    <div class="campo">
+                        <label>🔒 Confirmar senha</label>
+                        <input type="password" id="cadastroConfirmarSenha" placeholder="••••••••">
+                    </div>
+                    <button class="toolbar-btn primary" id="btnCadastrar" style="width: 100%; margin-top: 16px;">Cadastrar</button>
+                    <div style="text-align: center; margin-top: 16px;">
+                        <button class="toolbar-btn" id="btnVoltarLogin">← Voltar para login</button>
+                    </div>
+                </div>
+
+                <div id="recuperacaoForm" class="hidden">
+                    <h2 style="color: #4a6b3f; margin-bottom: 16px;">🔐 Recuperar Senha</h2>
+                    <div class="campo">
+                        <label>👤 Nome completo</label>
+                        <input type="text" id="recupNome" placeholder="Ex: João Silva">
+                    </div>
+                    <div class="campo">
+                        <label>📱 WhatsApp (com DDD)</label>
+                        <input type="text" id="recupTelefone" placeholder="5511999999999">
+                    </div>
+                    <button id="btnVerificarUsuario" class="toolbar-btn primary" style="width: 100%; margin-top: 16px;">✅ Verificar</button>
+                    <div style="text-align: center; margin-top: 16px;">
+                        <button class="toolbar-btn" id="btnVoltarLoginRecup">← Voltar</button>
+                    </div>
+                    <div id="recupResultado"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mainScreen" class="hidden">
+        <div class="toolbar">
+            <button class="toolbar-btn primary" id="btnGerarTexto">✨ Gerar Texto</button>
+            <button class="toolbar-btn success" id="btnSalvarTexto">💾 Salvar Texto</button>
+            <button class="toolbar-btn warning" id="btnExportarWord">📄 Word</button>
+            <button class="toolbar-btn warning" id="btnExportarPDF">📑 PDF</button>
+            <button class="toolbar-btn" id="btnCopiarTexto">📋 Copiar</button>
+            <button class="toolbar-btn danger" id="btnLogout">Sair</button>
+        </div>
+
+        <div class="main-container">
+            <div class="user-header">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-name" id="userNameDisplay">Usuário</div>
+                </div>
+                <div>
+                    <button id="btnAdminPanel" class="toolbar-btn warning" style="margin-right: 8px;">👑 Admin</button>
+                </div>
+            </div>
+
+            <div id="apiKeyWarning" class="api-key-warning">
+                ⚠️ Para usar as funcionalidades de IA, você precisa de uma chave API do Groq (gratuita).
+                <div class="api-key-input">
+                    <input type="password" id="groqApiKeyInput" placeholder="Cole sua chave API (ex: gsk_...)" style="flex:1">
+                    <button class="btn-add" id="btnSalvarApiKey">💾 Salvar Chave</button>
+                    <a href="https://console.groq.com/keys" target="_blank" style="font-size:0.75rem;">🔑 Obter chave gratuita</a>
+                </div>
+            </div>
+
+            <div class="livro-global-section">
+                <div class="livro-global-info">
+                    <span class="label">📚 Livro atual:</span>
+                    <select class="livro-global-select" id="livroGlobalSelect">
+                        <option>Estudo de Lucas</option>
+                        <option>Sermões</option>
+                    </select>
+                </div>
+                <button class="btn-add" id="btnCriarLivro">➕ Criar novo livro</button>
+                <button class="btn-add" id="btnAddCapitulo">📖 Adicionar Capítulo</button>
+                <button class="btn-add accent" id="btnAddTitulo">📌 Adicionar Título</button>
+            </div>
+
+            <div class="edit-area">
+                <div id="emptyState" class="empty-state">
+                    <div class="empty-state-icon">📖</div>
+                    <h3>Nenhum capítulo criado</h3>
+                    <p>Clique em "Adicionar Capítulo" para começar</p>
+                </div>
+                <div id="capitulosContainer" class="hidden"></div>
+            </div>
+
+            <div id="adminPanel" class="admin-section hidden">
+                <h2>👑 PAINEL ADMIN</h2>
+                <div class="campo">
+                    <label>Cole os dados do usuário:</label>
+                    <textarea id="adminDados" rows="3" placeholder="SOLICITAÇÃO DE REDEFINIÇÃO\n\nNome: João Silva\nTelefone: 5511999999999"></textarea>
+                    <button id="btnImportarDados" class="btn-add" style="margin-top: 8px;">📋 Importar</button>
+                </div>
+                <hr style="margin: 16px 0;">
+                <div class="campo">
+                    <label>👤 Nome</label>
+                    <input type="text" id="adminNome">
+                </div>
+                <div class="campo">
+                    <label>📱 Telefone</label>
+                    <input type="text" id="adminTelefone">
+                </div>
+                <button id="btnGerarLink" class="toolbar-btn success" style="width: 100%;">🔗 Gerar Link (24h)</button>
+                <div id="linkGeradoDiv" class="hidden" style="margin-top: 16px; background: #e8f5e9; padding: 16px; border-radius: 12px;">
+                    <strong>🔗 Link gerado:</strong>
+                    <div class="token-link" id="linkDisplay"></div>
+                    <div style="display: flex; gap: 8px; margin-top: 12px;">
+                        <button id="btnCopiarLink" class="btn-add">📋 Copiar</button>
+                        <button id="btnEnviarWhats" class="btn-add">📱 Enviar</button>
+                    </div>
+                </div>
+                <hr style="margin: 20px 0;">
+                <h3>📜 Histórico</h3>
+                <div id="historicoLinks"></div>
+                <button id="btnFecharAdmin" class="toolbar-btn danger" style="margin-top: 16px;">Fechar</button>
+            </div>
+
+            <div class="resultado-area">
+                <div class="resultado-header">
+                    <h3>📜 Texto Gerado</h3>
+                    <div>
+                        <button class="btn-add" id="btnCopiarResultado">📋 Copiar</button>
+                        <button class="btn-add success" id="btnSalvarResultado">💾 Salvar</button>
+                    </div>
+                </div>
+                <div class="texto-gerado" id="textoGerado">Nenhum texto gerado ainda.</div>
+            </div>
+
+            <div class="biblioteca-section">
+                <div class="biblioteca-header">
+                    <h2>📚 Biblioteca Comunitária</h2>
+                    <select class="filtro-select" id="filtroLivroBiblioteca" style="padding:8px 16px; border-radius:40px;">
+                        <option value="todos">📖 Todos os livros</option>
+                    </select>
+                </div>
+                <div class="lista-textos" id="listaTextosSalvos">
+                    <div class="empty-state" style="padding: 40px;">Nenhum texto salvo ainda.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="resetModal" class="modal-overlay hidden">
+        <div class="modal">
+            <h3>🔐 Redefinir Senha</h3>
+            <div style="background: #eef3e8; padding: 16px; border-radius: 12px; margin-bottom: 20px;">
+                <p><strong>👤 Nome:</strong> <span id="modalNome">Carregando...</span></p>
+                <p><strong>📱 Telefone:</strong> <span id="modalTelefone">Carregando...</span></p>
+            </div>
+            <div class="campo">
+                <label>Nova Senha</label>
+                <input type="password" id="novaSenha" placeholder="Digite sua nova senha">
+            </div>
+            <div class="campo">
+                <label>Confirmar Senha</label>
+                <input type="password" id="confirmarSenha" placeholder="Confirme sua nova senha">
+            </div>
+            <div class="modal-actions">
+                <button id="btnConfirmarReset" class="toolbar-btn primary">✅ Confirmar</button>
+                <button id="btnCancelarReset" class="toolbar-btn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
