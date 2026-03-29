@@ -1041,7 +1041,12 @@ limparTokensExpirados();
 atualizarSelectLivros();
 renderizarBiblioteca();
 atualizarUI();
-verificarTokenUrl();
+
+// Só verifica token se houver na URL
+if (window.location.search.includes('reset')) {
+    verificarTokenUrl();
+}
+
 // Limpeza forçada na inicialização
 (function limpezaImediata() {
     const tokens = JSON.parse(localStorage.getItem('tokensRecuperacao')) || [];
@@ -1061,11 +1066,14 @@ verificarTokenUrl();
         }
     }
 })();
+
 window.addEventListener('load', function() {
     fecharModalForcado();
 });
 
 window.addEventListener('popstate', function() {
     fecharModalForcado();
-    verificarTokenUrl();
+    if (window.location.search.includes('reset')) {
+        verificarTokenUrl();
+    }
 });
