@@ -39,27 +39,20 @@ USUARIOS_FIXOS.forEach(fixo => {
 let usuarioLogado = JSON.parse(sessionStorage.getItem('usuarioLogado')) || null;
 let tokensRecuperacao = JSON.parse(localStorage.getItem('tokensRecuperacao')) || [];
 
-// LIMPEZA FORÇADA - FECHA O MODAL IMEDIATAMENTE
+// LIMPEZA FORÇADA - NÃO REMOVE O TOKEN DA URL
 (function limpezaImediata() {
-    // Guarda o token ANTES de qualquer modificação
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('reset');
-    
+    // Fecha o modal se existir
     const modal = document.getElementById('resetModal');
     if (modal) modal.classList.add('hidden');
     
+    // Limpa campos
     const novaSenha = document.getElementById('novaSenha');
     const confirmarSenha = document.getElementById('confirmarSenha');
     if (novaSenha) novaSenha.value = '';
     if (confirmarSenha) confirmarSenha.value = '';
     
-    // Só remove o token da URL se NÃO houver token válido
-    // Aqui a gente só limpa se não tem token
-    if (!token && window.location.search.includes('reset')) {
-        const novaUrl = window.location.origin + window.location.pathname;
-        window.history.replaceState({}, document.title, novaUrl);
-    }
-    // Se tem token, NÃO remove da URL - deixa para a verificarTokenUrl processar
+    // NÃO remove o token da URL - deixa para a verificarTokenUrl processar
+    // Isso é tudo o que essa função deve fazer
 })();
 
 let livrosUsuario = JSON.parse(localStorage.getItem('livros_comunitarios')) || ['Estudo de Lucas', 'Sermões'];
@@ -1057,24 +1050,6 @@ if (window.location.search.includes('reset')) {
 }
 
 // Limpeza forçada na inicialização
-(function limpezaImediata() {
-    const tokens = JSON.parse(localStorage.getItem('tokensRecuperacao')) || [];
-    const agora = new Date();
-    const tokensValidos = tokens.filter(t => new Date(t.expiracao) >= agora);
-    if (tokensValidos.length !== tokens.length) {
-        localStorage.setItem('tokensRecuperacao', JSON.stringify(tokensValidos));
-    }
-    const modal = document.getElementById('resetModal');
-    if (modal) modal.classList.add('hidden');
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('reset');
-    if (token) {
-        const tokenValido = tokensValidos.find(t => t.token === token);
-        if (!tokenValido) {
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
-    }
-})();
 
 window.addEventListener('load', function() {
     fecharModalForcado();
