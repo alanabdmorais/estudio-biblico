@@ -120,10 +120,15 @@ function limparTokensExpirados() {
     }
 }
 
-function cadastrarUsuario(nome, whatsapp, senha) {
+function cadastrarUsuario(nome, whatsapp, cpf, nascimento, senha) {
     if (usuarios.find(u => u.whatsapp === whatsapp)) return alert('WhatsApp já cadastrado!'), false;
     if (nomeJaExiste(nome)) return alert('Nome "' + nome + '" já existe! Adicione sobrenome'), false;
-    usuarios.push({ nome, whatsapp, senha, isAdmin: false });
+    if (!cpf || cpf.length < 3) return alert('Digite os 3 primeiros dígitos do CPF'), false;
+    if (!nascimento || !nascimento.includes('/')) return alert('Digite a data de nascimento no formato DD/MM'), false;
+    
+    usuarios.push({ 
+        nome, whatsapp, cpf: cpf.trim(), nascimento: nascimento.trim(), senha, isAdmin: false 
+    });
     salvarUsuarios();
     alert('✅ Cadastro realizado! Faça login.');
     return true;
