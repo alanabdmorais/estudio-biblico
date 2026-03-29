@@ -184,41 +184,37 @@ function verificarTokenUrl() {
         document.getElementById('resetModal').classList.remove('hidden');
         window.history.replaceState({}, document.title, window.location.pathname);
         
-        const btnConfirmar = document.getElementById('btnConfirmarReset');
-        const btnCancelar = document.getElementById('btnCancelarReset');
-        const newConfirmar = btnConfirmar.cloneNode(true);
-        const newCancelar = btnCancelar.cloneNode(true);
-        btnConfirmar.parentNode.replaceChild(newConfirmar, btnConfirmar);
-        btnCancelar.parentNode.replaceChild(newCancelar, btnCancelar);
+        // Redefinir senha (nova versão sem token)
+const btnConfirmarReset = document.getElementById('btnConfirmarReset');
+if (btnConfirmarReset) {
+    btnConfirmarReset.onclick = function() {
+        const novaSenha = document.getElementById('novaSenha').value;
+        const confirmarSenha = document.getElementById('confirmarSenha').value;
+        const telefone = window.usuarioRedefinindo;
         
-        newConfirmar.onclick = function() {
-            const nova = document.getElementById('novaSenha').value;
-            const confirma = document.getElementById('confirmarSenha').value;
-            if (!nova || nova.length < 4) {
-                alert('⚠️ Senha deve ter pelo menos 4 caracteres');
-                return;
-            }
-            if (nova !== confirma) {
-                alert('⚠️ As senhas não conferem');
-                return;
-            }
-            if (redefinirSenha(token, nova)) {
-                alert('✅ Senha redefinida com sucesso para ' + tokenData.nome + '!');
-                fecharModalForcado();
-                window.location.href = window.location.pathname;
-            } else {
-                alert('❌ Erro ao redefinir senha');
-                fecharModalForcado();
-            }
-        };
-        newCancelar.onclick = function() {
+        if (!novaSenha || novaSenha.length < 4) {
+            alert('⚠️ Senha deve ter pelo menos 4 caracteres');
+            return;
+        }
+        if (novaSenha !== confirmarSenha) {
+            alert('⚠️ As senhas não conferem');
+            return;
+        }
+        
+        const usuario = usuarios.find(u => u.whatsapp === telefone);
+        if (usuario) {
+            usuario.senha = novaSenha;
+            salvarUsuarios();
+            alert('✅ Senha redefinida com sucesso! Faça login.');
             fecharModalForcado();
-            window.location.href = window.location.pathname;
-        };
-    } else {
-        alert('❌ Link inválido ou expirado! Solicite um novo link.');
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
+            document.getElementById('resetModal').classList.add('hidden');
+            window.usuarioRedefinindo = null;
+            document.getElementById('novaSenha').value = '';
+            document.getElementById('confirmarSenha').value = '';
+        } else {
+            alert('❌ Erro ao redefinir senha');
+        }
+    };
 }
 // ========== FUNÇÕES DE IA E CONSTRUTOR ==========
 async function chamarGroq(pergunta, referencia) {
