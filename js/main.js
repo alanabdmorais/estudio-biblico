@@ -147,11 +147,18 @@ function logout() {
 
 function fecharModalForcado() {
     const modal = document.getElementById('resetModal');
-    if (modal) modal.classList.add('hidden');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.style.display = '';
+    }
     const novaSenha = document.getElementById('novaSenha');
     const confirmarSenha = document.getElementById('confirmarSenha');
     if (novaSenha) novaSenha.value = '';
     if (confirmarSenha) confirmarSenha.value = '';
+    const modalNome = document.getElementById('modalNome');
+    const modalTelefone = document.getElementById('modalTelefone');
+    if (modalNome) modalNome.innerText = '';
+    if (modalTelefone) modalTelefone.innerText = '';
 }
 
 function verificarTokenUrl() {
@@ -1018,7 +1025,25 @@ atualizarSelectLivros();
 renderizarBiblioteca();
 atualizarUI();
 verificarTokenUrl();
-
+// Limpeza forçada na inicialização
+(function limpezaImediata() {
+    const tokens = JSON.parse(localStorage.getItem('tokensRecuperacao')) || [];
+    const agora = new Date();
+    const tokensValidos = tokens.filter(t => new Date(t.expiracao) >= agora);
+    if (tokensValidos.length !== tokens.length) {
+        localStorage.setItem('tokensRecuperacao', JSON.stringify(tokensValidos));
+    }
+    const modal = document.getElementById('resetModal');
+    if (modal) modal.classList.add('hidden');
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('reset');
+    if (token) {
+        const tokenValido = tokensValidos.find(t => t.token === token);
+        if (!tokenValido) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    }
+})();
 window.addEventListener('load', function() {
     fecharModalForcado();
 });
