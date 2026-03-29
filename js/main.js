@@ -41,16 +41,25 @@ let tokensRecuperacao = JSON.parse(localStorage.getItem('tokensRecuperacao')) ||
 
 // LIMPEZA FORÇADA - FECHA O MODAL IMEDIATAMENTE
 (function limpezaImediata() {
+    // Guarda o token ANTES de qualquer modificação
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('reset');
+    
     const modal = document.getElementById('resetModal');
     if (modal) modal.classList.add('hidden');
+    
     const novaSenha = document.getElementById('novaSenha');
     const confirmarSenha = document.getElementById('confirmarSenha');
     if (novaSenha) novaSenha.value = '';
     if (confirmarSenha) confirmarSenha.value = '';
-    if (window.location.search.includes('reset')) {
+    
+    // Só remove o token da URL se NÃO houver token válido
+    // Aqui a gente só limpa se não tem token
+    if (!token && window.location.search.includes('reset')) {
         const novaUrl = window.location.origin + window.location.pathname;
         window.history.replaceState({}, document.title, novaUrl);
     }
+    // Se tem token, NÃO remove da URL - deixa para a verificarTokenUrl processar
 })();
 
 let livrosUsuario = JSON.parse(localStorage.getItem('livros_comunitarios')) || ['Estudo de Lucas', 'Sermões'];
