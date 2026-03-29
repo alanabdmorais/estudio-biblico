@@ -168,54 +168,7 @@ function fecharModalForcado() {
     if (modalTelefone) modalTelefone.innerText = '';
 }
 
-function verificarTokenUrl() {
-    fecharModalForcado();
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
-    if (!token) return;
-    if (usuarioLogado) {
-        window.history.replaceState({}, document.title, window.location.pathname);
-        return;
-    }
-    const tokenData = validarToken(token);
-    if (tokenData && tokenData.nome && tokenData.telefone) {
-        document.getElementById('modalNome').innerText = tokenData.nome;
-        document.getElementById('modalTelefone').innerText = tokenData.telefone;
-        document.getElementById('resetModal').classList.remove('hidden');
-        window.history.replaceState({}, document.title, window.location.pathname);
-        
-        // Redefinir senha (nova versão sem token)
-const btnConfirmarReset = document.getElementById('btnConfirmarReset');
-if (btnConfirmarReset) {
-    btnConfirmarReset.onclick = function() {
-        const novaSenha = document.getElementById('novaSenha').value;
-        const confirmarSenha = document.getElementById('confirmarSenha').value;
-        const telefone = window.usuarioRedefinindo;
-        
-        if (!novaSenha || novaSenha.length < 4) {
-            alert('⚠️ Senha deve ter pelo menos 4 caracteres');
-            return;
-        }
-        if (novaSenha !== confirmarSenha) {
-            alert('⚠️ As senhas não conferem');
-            return;
-        }
-        
-        const usuario = usuarios.find(u => u.whatsapp === telefone);
-        if (usuario) {
-            usuario.senha = novaSenha;
-            salvarUsuarios();
-            alert('✅ Senha redefinida com sucesso! Faça login.');
-            fecharModalForcado();
-            document.getElementById('resetModal').classList.add('hidden');
-            window.usuarioRedefinindo = null;
-            document.getElementById('novaSenha').value = '';
-            document.getElementById('confirmarSenha').value = '';
-        } else {
-            alert('❌ Erro ao redefinir senha');
-        }
-    };
-}
+
 // ========== FUNÇÕES DE IA E CONSTRUTOR ==========
 async function chamarGroq(pergunta, referencia) {
     if (!GROQ_API_KEY) return "⚠️ Configure sua chave API do Groq primeiro!";
